@@ -42,11 +42,6 @@ const CollapseIcon = ({ collapsed }: { collapsed: boolean }) => (
     )}
   </svg>
 );
-const CropMark = ({ className }: { className: string }) => (
-  <svg className={`crop ${className}`} viewBox="0 0 18 18" fill="none" aria-hidden>
-    <path d="M1 17V1h16" stroke="#657170" strokeWidth="1" />
-  </svg>
-);
 /** 中性文档标识（取自仓库名 company_guide 缩写，非虚构品牌） */
 const DocMark = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -292,9 +287,7 @@ export default function App() {
     if (!el) return;
     const ro = new ResizeObserver(() => {
       const r = el.getBoundingClientRect();
-      setScale(
-        Math.max(0.05, Math.min((r.width - 16) / 1600, (r.height - 16) / 900))
-      );
+      setScale(Math.max(0.05, Math.min(r.width / 1600, r.height / 900)));
     });
     ro.observe(el);
     return () => ro.disconnect();

@@ -366,40 +366,14 @@ button {
   border: 1px solid var(--ink);
 }
 
-/* ---------- 舞台：1600×900 等比缩放 ---------- */
+/* ---------- 舞台：1600×900 等比缩放（四周间距 0，内容撑满） ---------- */
 .stage-area {
   flex: 1;
   min-height: 0;
   display: grid;
   place-items: center;
-  padding: 24px 28px 40px;
+  padding: 0;
   position: relative;
-}
-.crop {
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  pointer-events: none;
-  opacity: 0.55;
-}
-.crop.tl {
-  top: 12px;
-  left: 14px;
-}
-.crop.tr {
-  top: 12px;
-  right: 14px;
-  transform: rotate(90deg);
-}
-.crop.br {
-  bottom: 12px;
-  right: 14px;
-  transform: rotate(180deg);
-}
-.crop.bl {
-  bottom: 12px;
-  left: 14px;
-  transform: rotate(270deg);
 }
 .stage-scaler {
   position: relative;
