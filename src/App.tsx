@@ -1,12 +1,63 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { BrandMark, SECTIONS, SLIDES } from "./slides";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  DECK,
+  TOTAL,
+  pad,
+  probeLocalBase,
+  slideSrc,
+  type BaseKind,
+} from "./deck";
 
-const TOTAL = SLIDES.length;
-const clamp = (i: number) => Math.max(0, Math.min(TOTAL - 1, i));
+/* ---------- 图标（全部内联 SVG） ---------- */
+const ChevronLeft = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <path d="M14.5 5.5 8 12l6.5 6.5" stroke="currentColor" strokeWidth="1.8" />
+  </svg>
+);
+const ChevronRight = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <path d="M9.5 5.5 16 12l-6.5 6.5" stroke="currentColor" strokeWidth="1.8" />
+  </svg>
+);
+const GridIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <path
+      d="M4 4h6.5v6.5H4zM13.5 4H20v6.5h-6.5zM4 13.5h6.5V20H4zM13.5 13.5H20V20h-6.5z"
+      stroke="currentColor"
+      strokeWidth="1.6"
+    />
+  </svg>
+);
+const CloseIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="1.8" />
+  </svg>
+);
+const CollapseIcon = ({ collapsed }: { collapsed: boolean }) => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+    {collapsed ? (
+      <path d="M9.5 5.5 16 12l-6.5 6.5" stroke="currentColor" strokeWidth="1.8" />
+    ) : (
+      <path d="M14.5 5.5 8 12l6.5 6.5" stroke="currentColor" strokeWidth="1.8" />
+    )}
+  </svg>
+);
+const CropMark = ({ className }: { className: string }) => (
+  <svg className={`crop ${className}`} viewBox="0 0 18 18" fill="none" aria-hidden>
+    <path d="M1 17V1h16" stroke="#657170" strokeWidth="1" />
+  </svg>
+);
+/** 中性文档标识（取自仓库名 company_guide 缩写，非虚构品牌） */
+const DocMark = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <path d="M5 3.5h11.5L20 7v13.5H5z" stroke="currentColor" strokeWidth="1.4" />
+    <path d="M16 3.5V7.5H20" stroke="currentColor" strokeWidth="1.4" />
+    <path d="M8 11h8M8 14h8M8 17h5" stroke="#B6D62F" strokeWidth="1.6" />
+  </svg>
+);
 
-function parseHash(): number {
-  const m = window.location.hash.match(/#slide-(\d+)/);
+function initialIdxFromHash(): number {
+  const m = window.location.hash.match(/^#slide-(\d+)$/);
   if (m) {
     const n = parseInt(m[1], 10);
     if (n >= 1 && n <= TOTAL) return n - 1;
@@ -15,79 +66,99 @@ function parseHash(): number {
 }
 
 export default function App() {
-  const [index, setIndex] = useState<number>(() => parseHash());
+  const [idx, setIdx] = useState(initialIdxFromHash);
   const [dir, setDir] = useState(1);
   const [collapsed, setCollapsed] = useState(false);
-  const [scale, setScale] = useState(0.45);
-  const wrapRef = useRef<HTMLDivElement>(null);
+  const [grid, setGrid] = useState(false);
+  const [base, setBase] = useState<BaseKind | null>(null);
+  const [scale, setScale] = useState(0.4);
+  const [loaded, setLoaded] = useState<Record<number, boolean>>({});
 
-  const slide = SLIDES[index];
-  const section = useMemo(
-    () => SECTIONS.find((s) => s.id === slide.section) ?? SECTIONS[0],
-    [slide.section]
-  );
+  const stageRef = useRef<HTMLDivElement>(null);
+  const railListRef = useRef<HTMLDivElement>(null);
+  const idxRef = useRef(idx);
 
-  /* ---------- hash sync ---------- */
+  /* 图片源探测：同目录部署走相对路径，否则回退仓库 raw 链接 */
   useEffect(() => {
-    window.history.replaceState(null, "", `#slide-${index + 1}`);
-  }, [index]);
+    let alive = true;
+    probeLocalBase().then((b) => alive && setBase(b));
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  /* 舞台等比缩放（1600×900 → 视口） */
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => {
+      const r = el.getBoundingClientRect();
+      setScale(
+        Math.max(0.05, Math.min((r.width - 16) / 1600, (r.height - 16) / 900))
+      );
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  /* 翻页（带方向，用于过渡动画） */
+  const go = useCallback((next: number) => {
+    setIdx((prev) => {
+      const c = Math.max(0, Math.min(TOTAL - 1, next));
+      return c === prev ? prev : c;
+    });
+  }, []);
 
   useEffect(() => {
-    const onHash = () => setIndex(parseHash());
+    if (idx !== idxRef.current) {
+      setDir(idx > idxRef.current ? 1 : -1);
+      idxRef.current = idx;
+    }
+  }, [idx]);
+
+  /* idx → URL Hash（replaceState，不产生历史堆栈） */
+  useEffect(() => {
+    try {
+      const h = `#slide-${idx + 1}`;
+      if (window.location.hash !== h) {
+        window.history.replaceState(null, "", h);
+      }
+    } catch {
+      /* 某些嵌入环境禁止改写 URL，忽略即可 */
+    }
+    document.title = `P.${pad(idx + 1)} / ${TOTAL} · 公司介绍`;
+  }, [idx]);
+
+  /* Hash → idx（支持后退/前进与手改地址直达） */
+  useEffect(() => {
+    const onHash = () => {
+      const m = window.location.hash.match(/^#slide-(\d+)$/);
+      if (m) {
+        const n = parseInt(m[1], 10);
+        if (n >= 1 && n <= TOTAL) go(n - 1);
+      }
+    };
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);
-  }, []);
-
-  /* ---------- stage scaling ---------- */
-  useEffect(() => {
-    const el = wrapRef.current;
-    if (!el) return;
-    const compute = () => {
-      const w = el.clientWidth - 52;
-      const h = el.clientHeight - 52;
-      setScale(Math.max(0.15, Math.min(w / 1600, h / 900)));
-    };
-    compute();
-    const ro = new ResizeObserver(compute);
-    ro.observe(el);
-    window.addEventListener("resize", compute);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", compute);
-    };
-  }, []);
-
-  /* ---------- navigation ---------- */
-  const lastRef = useRef(index);
-  useEffect(() => {
-    lastRef.current = index;
-  }, [index]);
-
-  const go = useCallback((i: number) => {
-    const ni = clamp(i);
-    setDir(ni >= lastRef.current ? 1 : -1);
-    lastRef.current = ni;
-    setIndex(ni);
-  }, []);
-
-  const goSection = useCallback((sectionId: string) => {
-    const i = SLIDES.findIndex((s) => s.section === sectionId);
-    if (i >= 0) go(i);
   }, [go]);
 
+  /* 键盘：← → / PageUp PageDown / Space / Home / End / G 总览 / Esc */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       switch (e.key) {
         case "ArrowRight":
         case "PageDown":
-        case " ":
           e.preventDefault();
-          go(index + 1);
+          go(idxRef.current + 1);
           break;
         case "ArrowLeft":
         case "PageUp":
           e.preventDefault();
-          go(index - 1);
+          go(idxRef.current - 1);
+          break;
+        case " ":
+          e.preventDefault();
+          go(idxRef.current + (e.shiftKey ? -1 : 1));
           break;
         case "Home":
           e.preventDefault();
@@ -97,141 +168,235 @@ export default function App() {
           e.preventDefault();
           go(TOTAL - 1);
           break;
+        case "g":
+        case "G":
+          setGrid((v) => !v);
+          break;
+        case "Escape":
+          setGrid(false);
+          break;
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [index, go]);
+  }, [go]);
 
-  const progress = ((index + 1) / TOTAL) * 100;
+  /* 预加载当前页之后两张，翻页无等待 */
+  useEffect(() => {
+    if (!base) return;
+    [idx + 1, idx + 2].forEach((i) => {
+      if (i < TOTAL) {
+        const im = new Image();
+        im.src = slideSrc(DECK[i], base);
+      }
+    });
+  }, [idx, base]);
+
+  /* Rail 中当前页保持可见 */
+  useEffect(() => {
+    const list = railListRef.current;
+    if (!list) return;
+    const el = list.querySelector<HTMLElement>(`[data-page="${idx + 1}"]`);
+    el?.scrollIntoView({ block: "nearest" });
+  }, [idx]);
+
+  const slide = DECK[idx];
+  const progress = ((idx + 1) / TOTAL) * 100;
 
   return (
-    <div className="app-shell">
-      {/* ==================== RAIL ==================== */}
-      <aside className={`rail ${collapsed ? "collapsed" : ""}`}>
-        <div className="rail-head">
-          <button
-            onClick={() => setCollapsed((c) => !c)}
-            aria-label="ナビゲーション切替"
-            style={{ background: "none", border: "none", cursor: "pointer", padding: 0, flex: "0 0 auto", display: "flex" }}
-          >
-            <BrandMark size={38} />
-          </button>
-          <div className="rail-labels">
-            <div style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 600, letterSpacing: "0.14em", color: "var(--paper)" }}>
-              COMPANY
+    <>
+      <div className="app">
+        {/* ================= 左侧 Rail ================= */}
+        <aside className={`rail${collapsed ? " collapsed" : ""}`}>
+          <div className="rail-head">
+            <div className="rail-mark">
+              <DocMark />
             </div>
-            <div style={{ fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.18em", color: "rgba(247,248,245,0.45)", marginTop: 2 }}>
-              GUIDE / 2026
+            <div>
+              <div className="rail-title">公司介绍</div>
+              <div className="rail-sub">
+                GENERATED_PAGES / {TOTAL}P
+              </div>
             </div>
           </div>
-        </div>
 
-        <nav className="rail-nav">
-          {SECTIONS.map((s) => {
-            const active = s.id === section.id;
-            const firstIdx = SLIDES.findIndex((sl) => sl.section === s.id);
-            return (
+          <div className="rail-pages" ref={railListRef}>
+            {DECK.map((s, i) => (
               <button
-                key={s.id}
-                className={`rail-item ${active ? "active" : ""}`}
-                onClick={() => goSection(s.id)}
-                title={`${s.no} ${s.jp}`}
+                key={s.page}
+                data-page={s.page}
+                className={`page-item${i === idx ? " active" : ""}`}
+                onClick={() => go(i)}
+                aria-current={i === idx ? "page" : undefined}
               >
-                <span className="no">{s.no}</span>
-                <span className="rail-labels">
-                  <span className="en">{s.en}</span>
-                  <span className="jp">{s.jp} ・ {firstIdx + 1}–</span>
-                </span>
+                <span className="tick" />
+                <span className="pno">{pad(s.page)}</span>
+                <span className="pdash" />
+                <span className="pdott" />
               </button>
-            );
-          })}
-        </nav>
-
-        <div className="rail-foot">
-          <span className="txt" style={{ display: "block", color: "var(--lime)", marginBottom: 4 }}>
-            ● {section.en.toUpperCase()}
-          </span>
-          <span className="txt">
-            {String(index + 1).padStart(2, "0")} / {String(TOTAL).padStart(2, "0")}
-          </span>
-        </div>
-      </aside>
-
-      {/* ==================== MAIN ==================== */}
-      <div className="main-col">
-        {/* topbar */}
-        <div className="topbar">
-          <button className="nav-btn" onClick={() => go(index - 1)} disabled={index === 0} aria-label="前へ">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M9 2 L4 7 L9 12" stroke="currentColor" strokeWidth="2" />
-            </svg>
-          </button>
-          <button className="nav-btn" onClick={() => go(index + 1)} disabled={index === TOTAL - 1} aria-label="次へ">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M5 2 L10 7 L5 12" stroke="currentColor" strokeWidth="2" />
-            </svg>
-          </button>
-
-          <div style={{ minWidth: 0 }}>
-            <div className="crumb-chapter">
-              CH.{section.no} — {section.en.toUpperCase()}
-            </div>
-            <div className="crumb-title">{slide.title}</div>
+            ))}
           </div>
 
-          <div className="progress-track" title={`${index + 1} / ${TOTAL}`}>
+          <div className="rail-foot">
+            <button className="rail-toggle" onClick={() => setCollapsed((v) => !v)}>
+              <CollapseIcon collapsed={collapsed} />
+              <span>{collapsed ? "展开" : "收起"}</span>
+            </button>
+          </div>
+        </aside>
+
+        {/* ================= 右列 ================= */}
+        <div className="main">
+          <div className="topbar">
+            <button
+              className="navbtn"
+              onClick={() => go(idx - 1)}
+              disabled={idx === 0}
+              aria-label="上一页"
+            >
+              <ChevronLeft />
+            </button>
+            <button
+              className="navbtn"
+              onClick={() => go(idx + 1)}
+              disabled={idx === TOTAL - 1}
+              aria-label="下一页"
+            >
+              <ChevronRight />
+            </button>
+            <div className="crumb">
+              <b>公司介绍</b>
+              <span className="sep">/</span>
+              <span>第 {pad(slide.page)} 页</span>
+              <span className="sep">/</span>
+              <span className="src-file" title={slide.file}>
+                {slide.file}
+              </span>
+            </div>
+            <button className="gridbtn" onClick={() => setGrid(true)}>
+              <GridIcon />
+              总览
+            </button>
+            <div className="counter num">
+              <b>{pad(idx + 1)}</b>
+              <span> / {TOTAL}</span>
+            </div>
+          </div>
+          <div className="progress-track">
             <div className="progress-fill" style={{ width: `${progress}%` }} />
           </div>
 
-          <div className="pageno">
-            <span className="font-num" style={{ fontWeight: 700 }}>{String(index + 1).padStart(2, "0")}</span>
-            <span className="total"> / {String(TOTAL).padStart(2, "0")}</span>
-          </div>
-        </div>
+          {/* ---------------- 舞台 ---------------- */}
+          <div className="stage-area paper-bg" ref={stageRef}>
+            <CropMark className="tl" />
+            <CropMark className="tr" />
+            <CropMark className="br" />
+            <CropMark className="bl" />
 
-        {/* stage */}
-        <div className="stage-wrap" ref={wrapRef}>
-          <div className="stage slide-grid" style={{ transform: `scale(${scale})` }}>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={slide.id}
-                initial={{ opacity: 0, x: dir * 70 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: dir * -50 }}
-                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                style={{ position: "absolute", inset: 0 }}
+            <div
+              className="stage-scaler"
+              style={{
+                width: 1600 * scale,
+                height: 900 * scale,
+              }}
+            >
+              <div
+                className="stage-frame"
+                style={{ transform: `scale(${scale})`, transformOrigin: "0 0" }}
               >
-                {slide.body}
-              </motion.div>
-            </AnimatePresence>
-
-            {/* slide footer */}
-            <div className="slide-foot">
-              <span>COMPANY GUIDE 2026</span>
-              <span style={{ color: "var(--ink)", fontWeight: 600 }}>
-                {section.en.toUpperCase()} — {section.jp}
-              </span>
-              <span>
-                <span style={{ color: "var(--ink)" }}>{String(index + 1).padStart(2, "0")}</span> / {String(TOTAL).padStart(2, "0")}
-              </span>
+                <div
+                  key={idx}
+                  className="slide-anim"
+                  style={{ ["--dx" as string]: `${dir * 44}px` }}
+                >
+                  {!loaded[slide.page] && (
+                    <div className="shimmer">
+                      <span>
+                        {base ? `LOADING P.${pad(slide.page)}` : "INIT SOURCE…"}
+                      </span>
+                    </div>
+                  )}
+                  {base && (
+                    <img
+                      className="slide-img"
+                      src={slideSrc(slide, base)}
+                      alt={`公司介绍 第 ${slide.page} 页`}
+                      onLoad={() =>
+                        setLoaded((m) => ({ ...m, [slide.page]: true }))
+                      }
+                      draggable={false}
+                    />
+                  )}
+                </div>
+              </div>
             </div>
 
-            {/* crop marks */}
-            <div className="cropmark" style={{ top: 20, left: 20, borderLeft: "1.5px solid", borderTop: "1.5px solid" }} />
-            <div className="cropmark" style={{ top: 20, right: 20, borderRight: "1.5px solid", borderTop: "1.5px solid" }} />
-            <div className="cropmark" style={{ bottom: 20, left: 20, borderLeft: "1.5px solid", borderBottom: "1.5px solid" }} />
-            <div className="cropmark" style={{ bottom: 20, right: 20, borderRight: "1.5px solid", borderBottom: "1.5px solid" }} />
-          </div>
-
-          <div className="hint-bar">
-            <span><kbd>←</kbd><kbd>→</kbd>ページ移動</span>
-            <span><kbd>Space</kbd>次へ</span>
-            <span><kbd>Home</kbd><kbd>End</kbd>先頭 / 末尾</span>
-            <span>#slide-N で直接アクセス</span>
+            <div className="stage-meta">
+              <span>
+                <span className="dot-live" />
+                SRC&nbsp;generated_pages/{slide.file.length > 26 ? slide.file.slice(0, 24) + "…" : slide.file}
+              </span>
+              <span className="mid hint-bar">
+                <span>← → 翻页</span>
+                <span>SPACE 下一页</span>
+                <span>HOME/END 首尾页</span>
+                <span>G 总览</span>
+              </span>
+              <span>
+                1600 × 900 · SCALE {Math.round(scale * 100)}%
+              </span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* ================= 总览网格 ================= */}
+      {grid && (
+        <div className="overlay" role="dialog" aria-label="全部页面总览">
+          <div className="overlay-head">
+            <h2>全部页面</h2>
+            <span className="mono">
+              P.01 — P.{TOTAL} · 点击跳转 · ESC 关闭
+            </span>
+            <button className="overlay-close" onClick={() => setGrid(false)} aria-label="关闭总览">
+              <CloseIcon />
+            </button>
+          </div>
+          <div className="overlay-grid">
+            {DECK.map((s, i) => (
+              <button
+                key={s.page}
+                className={`thumb${i === idx ? " active" : ""}`}
+                style={{ animationDelay: `${Math.min(i * 18, 500)}ms` }}
+                onClick={() => {
+                  go(i);
+                  setGrid(false);
+                }}
+              >
+                <img
+                  src={base ? slideSrc(s, base) : undefined}
+                  alt={`第 ${s.page} 页缩略图`}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span className="tno">
+                  <b>P.{pad(s.page)}</b>
+                  <span>{i === idx ? "当前" : ""}</span>
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ================= 打印导出（整份 PDF） ================= */}
+      <div className="print-deck">
+        {DECK.map((s) => (
+          <figure key={s.page}>
+            <img src={slideSrc(s, base ?? "remote")} alt={`第 ${s.page} 页`} />
+          </figure>
+        ))}
+      </div>
+    </>
   );
 }
