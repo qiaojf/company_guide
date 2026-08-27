@@ -65,11 +65,210 @@ function initialIdxFromHash(): number {
   return 0;
 }
 
+/* ---------- OCR 文字导出（浏览器本地运行 Tesseract，数据不出本机） ---------- */
+
+declare global {
+  interface Window {
+    Tesseract?: {
+      createWorker: (
+        langs: string,
+        oem?: number,
+        options?: { logger?: (m: { status: string; progress: number }) => void }
+      ) => Promise<{
+        recognize: (src: string) => Promise<{ data: { text: string } }>;
+        terminate: () => Promise<void>;
+      }>;
+    };
+  }
+}
+
+let tesseractLoader: Promise<NonNullable<Window["Tesseract"]>> | null = null;
+
+function loadTesseract() {
+  if (window.Tesseract) return Promise.resolve(window.Tesseract);
+  if (tesseractLoader) return tesseractLoader;
+  tesseractLoader = new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = "https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js";
+    s.onload = () =>
+      window.Tesseract
+        ? resolve(window.Tesseract)
+        : reject(new Error("OCR 引擎未能挂载"));
+    s.onerror = () => {
+      tesseractLoader = null;
+      reject(new Error("OCR 引擎加载失败（首次需联网从 CDN 拉取引擎与语言包）"));
+    };
+    document.head.appendChild(s);
+  });
+  return tesseractLoader;
+}
+
+function ocrStageLabel(status: string): string {
+  if (status.includes("core")) return "正在加载 OCR 引擎核心…";
+  if (status.includes("language")) return "正在下载中文语言包（首次约 20MB）…";
+  if (status.includes("tesseract")) return "正在初始化 OCR 引擎…";
+  if (status.includes("api")) return "正在准备识别…";
+  return "正在识别…";
+}
+
+const TypeIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <path
+      d="M5 7V4.5h14V7M12 4.5v15M9 19.5h6"
+      stroke="currentColor"
+      strokeWidth="1.6"
+    />
+  </svg>
+);
+
+function OcrPanel({ base, onClose }: { base: BaseKind; onClose: () => void }) {
+  const [stage, setStage] = useState<"intro" | "running" | "done" | "error">(
+    "intro"
+  );
+  const [page, setPage] = useState(0);
+  const [pct, setPct] = useState(0);
+  const [msg, setMsg] = useState("");
+  const [text, setText] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const run = async () => {
+    setStage("running");
+    setText("");
+    setPage(0);
+    setPct(0);
+    setMsg("正在加载 OCR 引擎…");
+    try {
+      const T = await loadTesseract();
+      const worker = await T.createWorker("chi_sim+eng", 1, {
+        logger: (m) => {
+          if (m.status === "recognizing text") {
+            setPct(Math.round(m.progress * 100));
+          } else if (m.status) {
+            setMsg(ocrStageLabel(m.status));
+          }
+        },
+      });
+      const parts: string[] = [
+        "# 公司介绍 PPT · OCR 文本",
+        "> 由浏览器端 Tesseract（chi_sim+eng）逐页识别 generated_pages/ 原图生成",
+        "",
+      ];
+      for (const s of DECK) {
+        setPage(s.page);
+        setMsg(`正在识别 第 ${s.page} / ${TOTAL} 页…`);
+        const { data } = await worker.recognize(slideSrc(s, base));
+        parts.push(
+          `## 第 ${s.page} 页`,
+          "",
+          data.text.trim() || "（本页未识别到文字）",
+          ""
+        );
+        setText(parts.join("\n"));
+      }
+      await worker.terminate();
+      setStage("done");
+    } catch (e) {
+      setStage("error");
+      setMsg(e instanceof Error ? e.message : "OCR 过程出错");
+    }
+  };
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      /* 剪贴板不可用时静默 */
+    }
+  };
+
+  const download = () => {
+    const blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "company-guide-ocr.md";
+    a.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 2000);
+  };
+
+  return (
+    <aside className="ocr-panel" aria-label="OCR 文字导出">
+      <div className="ocr-head">
+        <div>
+          <div className="ocr-title">OCR 文字导出</div>
+          <div className="ocr-sub">TESSERACT · CHI_SIM + ENG · LOCAL</div>
+        </div>
+        <button className="icon-btn" onClick={onClose} aria-label="关闭面板">
+          <CloseIcon />
+        </button>
+      </div>
+
+      <div className="ocr-desc">
+        在本机浏览器内逐页识别 {TOTAL} 张幻灯片的文字，把内容交给我后即可按
+        new_prompt.md 规范重绘成 HTML / SVG 版本。识别全程本地完成，不上传数据；首次运行需联网拉取语言包（约 20MB）。
+      </div>
+
+      <div className="ocr-body">
+        {stage === "intro" && (
+          <button className="btn primary ocr-start" onClick={run}>
+            开始识别 {TOTAL} 页
+          </button>
+        )}
+
+        {stage !== "intro" && (
+          <>
+            <div className="ocr-progress">
+              <span>
+                {stage === "done"
+                  ? `已完成 ${TOTAL} / ${TOTAL} 页`
+                  : page
+                  ? `PAGE ${pad(page)} / ${TOTAL}`
+                  : "ENGINE"}
+              </span>
+              <span>{stage === "done" ? "100%" : `${pct}%`}</span>
+            </div>
+            <div className="ocr-bar" style={{ opacity: stage === "error" ? 0.3 : 1 }}>
+              <i style={{ width: stage === "done" ? "100%" : `${pct}%` }} />
+            </div>
+            <div className="ocr-msg">{msg}</div>
+          </>
+        )}
+
+        {stage === "error" && <div className="ocr-err">{msg}</div>}
+
+        {text && (
+          <>
+            <textarea className="ocr-out" readOnly value={text} aria-label="识别结果" />
+            <div className="ocr-actions">
+              <button className="btn" onClick={copy}>
+                {copied ? "已复制 ✓" : "复制全文"}
+              </button>
+              <button className="btn" onClick={download}>
+                下载 .md
+              </button>
+              {stage !== "running" && (
+                <button className="btn" onClick={run}>
+                  重新识别
+                </button>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+    </aside>
+  );
+}
+
+/* ---------- App ---------- */
+
 export default function App() {
   const [idx, setIdx] = useState(initialIdxFromHash);
   const [dir, setDir] = useState(1);
   const [collapsed, setCollapsed] = useState(false);
   const [grid, setGrid] = useState(false);
+  const [ocrOpen, setOcrOpen] = useState(false);
   const [base, setBase] = useState<BaseKind | null>(null);
   const [scale, setScale] = useState(0.4);
   const [loaded, setLoaded] = useState<Record<number, boolean>>({});
@@ -145,6 +344,8 @@ export default function App() {
   /* 键盘：← → / PageUp PageDown / Space / Home / End / G 总览 / Esc */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === "TEXTAREA" || t.tagName === "INPUT")) return;
       switch (e.key) {
         case "ArrowRight":
         case "PageDown":
@@ -172,8 +373,13 @@ export default function App() {
         case "G":
           setGrid((v) => !v);
           break;
+        case "o":
+        case "O":
+          setOcrOpen((v) => !v);
+          break;
         case "Escape":
           setGrid(false);
+          setOcrOpen(false);
           break;
       }
     };
@@ -273,6 +479,14 @@ export default function App() {
                 {slide.file}
               </span>
             </div>
+            <button
+              className={`gridbtn${ocrOpen ? " on" : ""}`}
+              onClick={() => setOcrOpen((v) => !v)}
+              title="OCR 文字导出（O）"
+            >
+              <TypeIcon />
+              文字
+            </button>
             <button className="gridbtn" onClick={() => setGrid(true)}>
               <GridIcon />
               总览
@@ -388,6 +602,9 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* ================= OCR 文字导出面板 ================= */}
+      {ocrOpen && base && <OcrPanel base={base} onClose={() => setOcrOpen(false)} />}
 
       {/* ================= 打印导出（整份 PDF） ================= */}
       <div className="print-deck">
