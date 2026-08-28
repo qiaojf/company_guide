@@ -1,29 +1,85 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>公司介绍 · 交互演示文稿 | company_guide</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;600;800&family=IBM+Plex+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f8f5" />
+    <meta
+      name="description"
+      content="テラボックス株式会社 会社案内 — HTML Presentation"
     />
-    <style>
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        background-color: #f7f8f5;
-        color: #101718;
-      }
-    </style>
+    <title>テラボックス株式会社｜会社案内</title>
+    <link rel="stylesheet" href="./style.css?v=20260828-13" />
+    <link rel="stylesheet" href="./fidelity.css?v=20260828-13" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <div class="app" id="app">
+      <aside class="rail" id="rail" aria-label="スライドナビゲーション">
+        <div class="rail__brand">
+          <img src="./assets/images/s01-01.png" alt="Terabox" />
+        </div>
+
+        <button
+          class="rail__toggle"
+          id="railToggle"
+          type="button"
+          aria-label="ナビゲーションを折りたたむ"
+          aria-expanded="true"
+        >
+          <span class="rail__toggle-icon" aria-hidden="true"></span>
+        </button>
+
+        <nav class="rail__nav" id="sectionNav" aria-label="章ナビゲーション"></nav>
+
+        <div class="rail__foot">
+          <span id="railCount">43 PAGES</span>
+          <span>© TERABOX INC.</span>
+        </div>
+      </aside>
+
+      <div class="workspace">
+        <header class="topbar">
+          <div class="topbar__company">テラボックス株式会社</div>
+          <div class="topbar__title">会社案内</div>
+          <button
+            class="topbar__layer-toggle"
+            id="layerToggle"
+            type="button"
+            aria-label="表示レイヤーを切り替える"
+          >
+            <span>LAYER</span>
+            <b id="layerModeLabel">合成</b>
+          </button>
+          <div class="topbar__mode"><i></i> WEB PRESENTATION</div>
+        </header>
+
+        <main class="viewer" id="viewer">
+          <div class="stage-shell" id="stageShell">
+            <section
+              class="slide-stage"
+              id="slideStage"
+              aria-live="polite"
+              aria-label="スライド"
+            ></section>
+          </div>
+        </main>
+
+        <div class="pager" aria-label="ページ切替">
+          <button id="prevSlide" type="button" aria-label="前のページ">‹</button>
+          <div class="pager__status">
+            <span id="pageCurrent">01</span>
+            <span class="pager__slash">/</span>
+            <span id="pageTotal">43</span>
+          </div>
+          <div class="pager__track" aria-hidden="true">
+            <span id="pageProgress"></span>
+          </div>
+          <button id="nextSlide" type="button" aria-label="次のページ">›</button>
+        </div>
+      </div>
+    </div>
+
+    <noscript>このプレゼンテーションの表示には JavaScript が必要です。</noscript>
+    <script src="./app.js?v=20260828-13" defer></script>
   </body>
 </html>

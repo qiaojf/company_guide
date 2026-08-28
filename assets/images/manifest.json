@@ -1,0 +1,918 @@
+{
+  "1": [
+    {
+      "file": "s01-01.png",
+      "width": 1426,
+      "height": 902,
+      "left": 4570997,
+      "top": 3429000,
+      "shape_width": 3050006,
+      "shape_height": 1834816
+    }
+  ],
+  "2": [],
+  "3": [
+    {
+      "file": "s03-01.jpg",
+      "width": 360,
+      "height": 336,
+      "left": 9312275,
+      "top": 3004185,
+      "shape_width": 2449195,
+      "shape_height": 2333625
+    }
+  ],
+  "4": [
+    {
+      "file": "s04-01.png",
+      "width": 300,
+      "height": 300,
+      "left": 4856760,
+      "top": 1808640,
+      "shape_width": 1619280,
+      "shape_height": 1619280
+    }
+  ],
+  "5": [],
+  "6": [],
+  "7": [
+    {
+      "file": "s07-01.png",
+      "width": 1536,
+      "height": 1024,
+      "left": 7761605,
+      "top": 4002405,
+      "shape_width": 3507740,
+      "shape_height": 2338705
+    }
+  ],
+  "8": [
+    {
+      "file": "s08-01.png",
+      "width": 1536,
+      "height": 1024,
+      "left": 7004050,
+      "top": 1459865,
+      "shape_width": 4772025,
+      "shape_height": 3182620
+    }
+  ],
+  "9": [
+    {
+      "file": "s09-01.png",
+      "width": 1536,
+      "height": 1024,
+      "left": 6668135,
+      "top": 1831340,
+      "shape_width": 4358005,
+      "shape_height": 2907030
+    }
+  ],
+  "10": [],
+  "11": [
+    {
+      "file": "s11-01.png",
+      "width": 338,
+      "height": 333,
+      "left": 7516495,
+      "top": 3159760,
+      "shape_width": 3314065,
+      "shape_height": 3014980
+    }
+  ],
+  "12": [
+    {
+      "file": "s12-01.jpg",
+      "width": 2048,
+      "height": 1152,
+      "left": 6797060,
+      "top": 0,
+      "shape_width": 5394940,
+      "shape_height": 6858001
+    },
+    {
+      "file": "s12-02.png",
+      "width": 251,
+      "height": 91,
+      "left": 876686,
+      "top": 2802164,
+      "shape_width": 1041635,
+      "shape_height": 377512
+    },
+    {
+      "file": "s12-03.png",
+      "width": 5000,
+      "height": 1484,
+      "left": 2146878,
+      "top": 2802165,
+      "shape_width": 1299706,
+      "shape_height": 385862
+    },
+    {
+      "file": "s12-04.png",
+      "width": 273,
+      "height": 77,
+      "left": 3702378,
+      "top": 2840738,
+      "shape_width": 1045115,
+      "shape_height": 294776
+    },
+    {
+      "file": "s12-05.png",
+      "width": 452,
+      "height": 128,
+      "left": 876686,
+      "top": 4679304,
+      "shape_width": 1759191,
+      "shape_height": 498178
+    },
+    {
+      "file": "s12-06.png",
+      "width": 250,
+      "height": 56,
+      "left": 2890836,
+      "top": 4679303,
+      "shape_width": 2381250,
+      "shape_height": 533400
+    }
+  ],
+  "13": [
+    {
+      "file": "s13-01.png",
+      "width": 442,
+      "height": 1060,
+      "left": 468848,
+      "top": 3669769,
+      "shape_width": 1116518,
+      "shape_height": 2678402
+    },
+    {
+      "file": "s13-02.png",
+      "width": 214,
+      "height": 601,
+      "left": 1883917,
+      "top": 3758704,
+      "shape_width": 887839,
+      "shape_height": 2500532
+    },
+    {
+      "file": "s13-03.png",
+      "width": 578,
+      "height": 770,
+      "left": 2689821,
+      "top": 3249827,
+      "shape_width": 2399487,
+      "shape_height": 3198951
+    },
+    {
+      "file": "s13-04.png",
+      "width": 815,
+      "height": 815,
+      "left": 4874687,
+      "top": 4235548,
+      "shape_width": 2112623,
+      "shape_height": 2112623
+    },
+    {
+      "file": "s13-05.png",
+      "width": 937,
+      "height": 580,
+      "left": 6574250,
+      "top": 4140435,
+      "shape_width": 1727772,
+      "shape_height": 2411100
+    },
+    {
+      "file": "s13-06.png",
+      "width": 416,
+      "height": 367,
+      "left": 8759066,
+      "top": 4735275,
+      "shape_width": 1726463,
+      "shape_height": 1523961
+    },
+    {
+      "file": "s13-07.png",
+      "width": 332,
+      "height": 538,
+      "left": 10485529,
+      "top": 4023442,
+      "shape_width": 1377409,
+      "shape_height": 2235794
+    },
+    {
+      "file": "s13-08.png",
+      "width": 2962,
+      "height": 1692,
+      "left": 0,
+      "top": 0,
+      "shape_width": 12299653,
+      "shape_height": 7028373
+    },
+    {
+      "file": "s13-09.png",
+      "width": 1672,
+      "height": 419,
+      "left": 1401274,
+      "top": 425999,
+      "shape_width": 6946825,
+      "shape_height": 1741608
+    }
+  ],
+  "14": [
+    {
+      "file": "s14-01.jpg",
+      "width": 7384,
+      "height": 4267,
+      "left": -167640,
+      "top": -98425,
+      "shape_width": 12455525,
+      "shape_height": 7198995
+    },
+    {
+      "file": "s14-02.png",
+      "width": 5000,
+      "height": 1484,
+      "left": 381000,
+      "top": 6309360,
+      "shape_width": 951230,
+      "shape_height": 282575
+    }
+  ],
+  "15": [
+    {
+      "file": "s15-01.png",
+      "width": 2456,
+      "height": 1317,
+      "left": 613606,
+      "top": 902718,
+      "shape_width": 8094616,
+      "shape_height": 4340639
+    },
+    {
+      "file": "s15-02.png",
+      "width": 762,
+      "height": 845,
+      "left": 8930640,
+      "top": 902718,
+      "shape_width": 2354448,
+      "shape_height": 2610904
+    },
+    {
+      "file": "s15-03.png",
+      "width": 770,
+      "height": 811,
+      "left": 8930640,
+      "top": 3755585,
+      "shape_width": 2354448,
+      "shape_height": 2479815
+    }
+  ],
+  "16": [
+    {
+      "file": "s16-01.png",
+      "width": 2712,
+      "height": 1370,
+      "left": 677334,
+      "top": 897194,
+      "shape_width": 10617580,
+      "shape_height": 5363600
+    }
+  ],
+  "17": [
+    {
+      "file": "s17-01.jpg",
+      "width": 900,
+      "height": 675,
+      "left": 7333989,
+      "top": 852171,
+      "shape_width": 4182028,
+      "shape_height": 2780377
+    },
+    {
+      "file": "s17-02.jpg",
+      "width": 900,
+      "height": 675,
+      "left": 9552943,
+      "top": 3730339,
+      "shape_width": 1963074,
+      "shape_height": 2427829
+    },
+    {
+      "file": "s17-03.jpg",
+      "width": 675,
+      "height": 900,
+      "left": 7333989,
+      "top": 3730338,
+      "shape_width": 2123783,
+      "shape_height": 2427829
+    }
+  ],
+  "18": [
+    {
+      "file": "s18-01.png",
+      "width": 195,
+      "height": 305,
+      "left": 308798,
+      "top": 3000850,
+      "shape_width": 1986361,
+      "shape_height": 3106874
+    },
+    {
+      "file": "s18-02.png",
+      "width": 271,
+      "height": 329,
+      "left": 2521887,
+      "top": 2836984,
+      "shape_width": 2767337,
+      "shape_height": 3359609
+    },
+    {
+      "file": "s18-03.png",
+      "width": 2000,
+      "height": 1125,
+      "left": 5515952,
+      "top": 2654563,
+      "shape_width": 2395855,
+      "shape_height": 3542030
+    },
+    {
+      "file": "s18-04.png",
+      "width": 906,
+      "height": 733,
+      "left": 7791041,
+      "top": 2654563,
+      "shape_width": 4304670,
+      "shape_height": 3671310
+    }
+  ],
+  "19": [
+    {
+      "file": "s19-01.png",
+      "width": 922,
+      "height": 475,
+      "left": 1705524,
+      "top": 1816112,
+      "shape_width": 8780952,
+      "shape_height": 4523809
+    }
+  ],
+  "20": [
+    {
+      "file": "s20-01.png",
+      "width": 923,
+      "height": 639,
+      "left": 1641689,
+      "top": 853530,
+      "shape_width": 8908622,
+      "shape_height": 5477650
+    }
+  ],
+  "21": [
+    {
+      "file": "s21-01.png",
+      "width": 669,
+      "height": 944,
+      "left": 3406289,
+      "top": -259122,
+      "shape_width": 5379421,
+      "shape_height": 7590692
+    }
+  ],
+  "22": [
+    {
+      "file": "s22-01.png",
+      "width": 1024,
+      "height": 1024,
+      "left": 6934200,
+      "top": 4740910,
+      "shape_width": 1416685,
+      "shape_height": 1416685
+    },
+    {
+      "file": "s22-02.png",
+      "width": 1024,
+      "height": 1024,
+      "left": 3971290,
+      "top": 4892040,
+      "shape_width": 1828800,
+      "shape_height": 1265555
+    },
+    {
+      "file": "s22-03.png",
+      "width": 1024,
+      "height": 1536,
+      "left": 2185035,
+      "top": 4422775,
+      "shape_width": 1222375,
+      "shape_height": 1836420
+    },
+    {
+      "file": "s22-04.png",
+      "width": 1536,
+      "height": 1024,
+      "left": 9326880,
+      "top": 4784090,
+      "shape_width": 1992630,
+      "shape_height": 1475105
+    }
+  ],
+  "23": [
+    {
+      "file": "s23-01.png",
+      "width": 2500,
+      "height": 1345,
+      "left": 2808605,
+      "top": 1153160,
+      "shape_width": 9292590,
+      "shape_height": 5003800
+    },
+    {
+      "file": "s23-02.png",
+      "width": 29,
+      "height": 30,
+      "left": 2344684,
+      "top": 6410654,
+      "shape_width": 279372,
+      "shape_height": 284291
+    }
+  ],
+  "24": [
+    {
+      "file": "s24-01.png",
+      "width": 29,
+      "height": 30,
+      "left": 2344684,
+      "top": 6410654,
+      "shape_width": 279372,
+      "shape_height": 284291
+    },
+    {
+      "file": "s24-02.png",
+      "width": 1024,
+      "height": 1024,
+      "left": 6934200,
+      "top": 1258414,
+      "shape_width": 4648200,
+      "shape_height": 4648200
+    }
+  ],
+  "25": [
+    {
+      "file": "s25-01.png",
+      "width": 29,
+      "height": 30,
+      "left": 2344684,
+      "top": 6410654,
+      "shape_width": 279372,
+      "shape_height": 284291
+    },
+    {
+      "file": "s25-02.jpg",
+      "width": 386,
+      "height": 386,
+      "left": 4086165,
+      "top": 1427120,
+      "shape_width": 3678005,
+      "shape_height": 3678005
+    }
+  ],
+  "26": [
+    {
+      "file": "s26-01.png",
+      "width": 29,
+      "height": 30,
+      "left": 2344684,
+      "top": 6410654,
+      "shape_width": 279372,
+      "shape_height": 284291
+    },
+    {
+      "file": "s26-02.png",
+      "width": 1184,
+      "height": 1424,
+      "left": 7543703,
+      "top": 980728,
+      "shape_width": 4213260,
+      "shape_height": 5067300
+    }
+  ],
+  "27": [
+    {
+      "file": "s27-01.png",
+      "width": 29,
+      "height": 30,
+      "left": 2344684,
+      "top": 6410654,
+      "shape_width": 279372,
+      "shape_height": 284291
+    },
+    {
+      "file": "s27-02.png",
+      "width": 527,
+      "height": 332,
+      "left": 1042384,
+      "top": 1341919,
+      "shape_width": 4882705,
+      "shape_height": 3070455
+    },
+    {
+      "file": "s27-03.jpg",
+      "width": 528,
+      "height": 332,
+      "left": 6241705,
+      "top": 1341919,
+      "shape_width": 4882705,
+      "shape_height": 3070455
+    }
+  ],
+  "28": [
+    {
+      "file": "s28-01.png",
+      "width": 29,
+      "height": 30,
+      "left": 2344684,
+      "top": 6410654,
+      "shape_width": 279372,
+      "shape_height": 284291
+    },
+    {
+      "file": "s28-02.jpg",
+      "width": 528,
+      "height": 332,
+      "left": 890905,
+      "top": 1349375,
+      "shape_width": 4785995,
+      "shape_height": 3009265
+    },
+    {
+      "file": "s28-03.png",
+      "width": 528,
+      "height": 332,
+      "left": 6246495,
+      "top": 1349375,
+      "shape_width": 4785995,
+      "shape_height": 3009265
+    }
+  ],
+  "29": [
+    {
+      "file": "s29-01.png",
+      "width": 29,
+      "height": 30,
+      "left": 2344684,
+      "top": 6410654,
+      "shape_width": 279372,
+      "shape_height": 284291
+    },
+    {
+      "file": "s29-02.png",
+      "width": 1626,
+      "height": 1896,
+      "left": 6781800,
+      "top": 878301,
+      "shape_width": 4648200,
+      "shape_height": 5426716
+    }
+  ],
+  "30": [
+    {
+      "file": "s30-01.png",
+      "width": 29,
+      "height": 30,
+      "left": 2344684,
+      "top": 6410654,
+      "shape_width": 279372,
+      "shape_height": 284291
+    },
+    {
+      "file": "s30-02.png",
+      "width": 1392,
+      "height": 1066,
+      "left": 4800600,
+      "top": 895676,
+      "shape_width": 6629400,
+      "shape_height": 5067300
+    }
+  ],
+  "31": [
+    {
+      "file": "s31-01.png",
+      "width": 29,
+      "height": 30,
+      "left": 2344684,
+      "top": 6410654,
+      "shape_width": 279372,
+      "shape_height": 284291
+    },
+    {
+      "file": "s31-02.jpg",
+      "width": 1155,
+      "height": 1155,
+      "left": 6967164,
+      "top": 1172965,
+      "shape_width": 4800599,
+      "shape_height": 4800599
+    }
+  ],
+  "32": [
+    {
+      "file": "s32-01.png",
+      "width": 29,
+      "height": 30,
+      "left": 2344684,
+      "top": 6410654,
+      "shape_width": 279372,
+      "shape_height": 284291
+    }
+  ],
+  "33": [
+    {
+      "file": "s33-01.png",
+      "width": 29,
+      "height": 30,
+      "left": 2344684,
+      "top": 6410654,
+      "shape_width": 279372,
+      "shape_height": 284291
+    },
+    {
+      "file": "s33-02.png",
+      "width": 886,
+      "height": 574,
+      "left": 6248400,
+      "top": 1436339,
+      "shape_width": 5590466,
+      "shape_height": 3621814
+    }
+  ],
+  "34": [
+    {
+      "file": "s34-01.png",
+      "width": 1391,
+      "height": 708,
+      "left": 5032375,
+      "top": 1486535,
+      "shape_width": 6541135,
+      "shape_height": 3920490
+    }
+  ],
+  "35": [],
+  "36": [],
+  "37": [
+    {
+      "file": "s37-01.png",
+      "width": 1536,
+      "height": 1024,
+      "left": 6262370,
+      "top": 1558290,
+      "shape_width": 5321935,
+      "shape_height": 3547745
+    }
+  ],
+  "38": [
+    {
+      "file": "s38-01.png",
+      "width": 1024,
+      "height": 1024,
+      "left": 1161415,
+      "top": 3395980,
+      "shape_width": 2179955,
+      "shape_height": 2179955
+    },
+    {
+      "file": "s38-02.png",
+      "width": 1024,
+      "height": 1024,
+      "left": 4953635,
+      "top": 3382010,
+      "shape_width": 2181225,
+      "shape_height": 2181225
+    },
+    {
+      "file": "s38-03.png",
+      "width": 1536,
+      "height": 1024,
+      "left": 8538210,
+      "top": 3500755,
+      "shape_width": 2993390,
+      "shape_height": 1995805
+    }
+  ],
+  "39": [],
+  "40": [
+    {
+      "file": "s40-01.png",
+      "width": 1536,
+      "height": 1024,
+      "left": 7761605,
+      "top": 4002405,
+      "shape_width": 3507740,
+      "shape_height": 2338705
+    }
+  ],
+  "41": [
+    {
+      "file": "s41-01.png",
+      "width": 318,
+      "height": 285,
+      "left": 2331085,
+      "top": 1901190,
+      "shape_width": 2907665,
+      "shape_height": 2757170
+    },
+    {
+      "file": "s41-02.png",
+      "width": 310,
+      "height": 275,
+      "left": 7433945,
+      "top": 1991995,
+      "shape_width": 2463165,
+      "shape_height": 2666365
+    }
+  ],
+  "42": [
+    {
+      "file": "s42-01.png",
+      "width": 261,
+      "height": 281,
+      "left": 1022350,
+      "top": 2181860,
+      "shape_width": 2063115,
+      "shape_height": 2462530
+    },
+    {
+      "file": "s42-02.png",
+      "width": 244,
+      "height": 260,
+      "left": 3851275,
+      "top": 2181860,
+      "shape_width": 1680845,
+      "shape_height": 2476500
+    },
+    {
+      "file": "s42-03.png",
+      "width": 225,
+      "height": 256,
+      "left": 6363335,
+      "top": 2192020,
+      "shape_width": 2105660,
+      "shape_height": 2395855
+    },
+    {
+      "file": "s42-04.png",
+      "width": 208,
+      "height": 251,
+      "left": 9086215,
+      "top": 2252980,
+      "shape_width": 1981200,
+      "shape_height": 2390775
+    }
+  ],
+  "43": [
+    {
+      "file": "s43-01.png",
+      "width": 440,
+      "height": 68,
+      "left": 6561177,
+      "top": 3603424,
+      "shape_width": 2059166,
+      "shape_height": 318234
+    },
+    {
+      "file": "s43-02.jpg",
+      "width": 252,
+      "height": 105,
+      "left": 3911552,
+      "top": 1269436,
+      "shape_width": 1426568,
+      "shape_height": 485232
+    },
+    {
+      "file": "s43-03.png",
+      "width": 800,
+      "height": 227,
+      "left": 1219450,
+      "top": 3683100,
+      "shape_width": 1529674,
+      "shape_height": 307847
+    },
+    {
+      "file": "s43-04.jpg",
+      "width": 484,
+      "height": 364,
+      "left": 1091113,
+      "top": 5518265,
+      "shape_width": 1560637,
+      "shape_height": 438160
+    },
+    {
+      "file": "s43-05.png",
+      "width": 407,
+      "height": 113,
+      "left": 9739652,
+      "top": 4800788,
+      "shape_width": 1314211,
+      "shape_height": 364495
+    },
+    {
+      "file": "s43-06.png",
+      "width": 342,
+      "height": 76,
+      "left": 9378526,
+      "top": 2443466,
+      "shape_width": 1722361,
+      "shape_height": 382747
+    },
+    {
+      "file": "s43-07.png",
+      "width": 216,
+      "height": 93,
+      "left": 3858721,
+      "top": 3558224,
+      "shape_width": 1633810,
+      "shape_height": 465984
+    },
+    {
+      "file": "s43-08.png",
+      "width": 441,
+      "height": 143,
+      "left": 9140200,
+      "top": 1245832,
+      "shape_width": 2024002,
+      "shape_height": 656308
+    },
+    {
+      "file": "s43-09.png",
+      "width": 544,
+      "height": 70,
+      "left": 9218450,
+      "top": 5657026,
+      "shape_width": 1945752,
+      "shape_height": 250372
+    },
+    {
+      "file": "s43-10.jpg",
+      "width": 348,
+      "height": 116,
+      "left": 6681297,
+      "top": 2443466,
+      "shape_width": 1476268,
+      "shape_height": 358223
+    },
+    {
+      "file": "s43-11.jpg",
+      "width": 266,
+      "height": 180,
+      "left": 9688989,
+      "top": 3185008,
+      "shape_width": 1382938,
+      "shape_height": 777089
+    },
+    {
+      "file": "s43-12.png",
+      "width": 409,
+      "height": 44,
+      "left": 4317800,
+      "top": 5524803,
+      "shape_width": 3556399,
+      "shape_height": 382595
+    },
+    {
+      "file": "s43-13.png",
+      "width": 401,
+      "height": 92,
+      "left": 3858721,
+      "top": 4589591,
+      "shape_width": 2121332,
+      "shape_height": 486690
+    },
+    {
+      "file": "s43-14.png",
+      "width": 310,
+      "height": 163,
+      "left": 6782396,
+      "top": 4436292,
+      "shape_width": 1574803,
+      "shape_height": 828210
+    },
+    {
+      "file": "s43-15.png",
+      "width": 256,
+      "height": 256,
+      "left": 616016,
+      "top": 1103590,
+      "shape_width": 2862412,
+      "shape_height": 773304
+    },
+    {
+      "file": "s43-16.jpg",
+      "width": 450,
+      "height": 357,
+      "left": 6565411,
+      "top": 1107104,
+      "shape_width": 1511808,
+      "shape_height": 725636
+    }
+  ]
+}
